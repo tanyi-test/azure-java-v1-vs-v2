@@ -143,6 +143,7 @@ public class SimpleHttpClientWithLogging implements HttpClient {
 
                 byte[] body = Bytes.toArray(byteBuffer);
                 System.out.printf("> %s\r\n", new String(body));
+                socket.close();
 
                 return Mono.just(new SimpleHttpResponse(request, statusCode, headers, Flux.just(ByteBuffer.wrap(body))));
             } catch (Exception e) {
