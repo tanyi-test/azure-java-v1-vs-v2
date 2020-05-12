@@ -20,9 +20,12 @@ public class Track2Differ {
         AzureProfile profile = new AzureProfile(AzureEnvironment.AZURE, true);
 
         Azure azure = Azure.configure()
+                .withPolicy(new ContinueInPolling504())
                 .withHttpClient(new SimpleHttpClientWithLogging())
                 .authenticate(credential, profile)
                 .withDefaultSubscription();
+
+        azure.resourceGroups().list().forEach(rg -> System.out.println(rg.name()));
 
         azure.resourceGroups().list().forEach(rg -> System.out.println(rg.name()));
     }
