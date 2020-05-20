@@ -26,11 +26,9 @@ public class Track2Differ {
                 .withDefaultSubscription();
 
         azure.resourceGroups().list().forEach(rg -> System.out.println(rg.name()));
-
-        azure.resourceGroups().list().forEach(rg -> System.out.println(rg.name()));
     }
 
-    public static void asynchronous(Azure azure) {
+    public static void asynchronous(Azure azure, String rootPassword) {
         Flux<Indexable> vm1 = azure.virtualMachines().define("vm1")
                 .withRegion(Region.US_WEST)
                 .withNewResourceGroup("randomRG")
@@ -39,7 +37,7 @@ public class Track2Differ {
                 .withoutPrimaryPublicIPAddress()
                 .withPopularLinuxImage(KnownLinuxVirtualMachineImage.UBUNTU_SERVER_16_04_LTS)
                 .withRootUsername("username")
-                .withRootPassword("Pa5$word1234")
+                .withRootPassword(rootPassword)
                 .createAsync();
 
         Flux<Indexable> vm2 = azure.virtualMachines().define("vm2")
@@ -50,7 +48,7 @@ public class Track2Differ {
                 .withoutPrimaryPublicIPAddress()
                 .withPopularLinuxImage(KnownLinuxVirtualMachineImage.UBUNTU_SERVER_16_04_LTS)
                 .withRootUsername("username")
-                .withRootPassword("Pa5$word1234")
+                .withRootPassword(rootPassword)
                 .createAsync();
 
         Flux.merge(vm1, Mono.delay(Duration.ofSeconds(1)).thenMany(vm2))

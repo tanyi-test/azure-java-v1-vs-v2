@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 
 public class Track1Differ {
-    public static void asynchronous(Azure azure) {
+    public static void asynchronous(Azure azure, String rootPassword) {
         Observable<Indexable> vm1 = azure.virtualMachines().define("vm1")
                 .withRegion(Region.US_WEST)
                 .withNewResourceGroup("randomRG")
@@ -21,7 +21,7 @@ public class Track1Differ {
                 .withoutPrimaryPublicIPAddress()
                 .withPopularLinuxImage(KnownLinuxVirtualMachineImage.UBUNTU_SERVER_16_04_LTS)
                 .withRootUsername("username")
-                .withRootPassword("Pa5$word1234")
+                .withRootPassword(rootPassword)
                 .createAsync();
 
         Observable<Indexable> vm2 = azure.virtualMachines().define("vm2")
@@ -32,7 +32,7 @@ public class Track1Differ {
                 .withoutPrimaryPublicIPAddress()
                 .withPopularLinuxImage(KnownLinuxVirtualMachineImage.UBUNTU_SERVER_16_04_LTS)
                 .withRootUsername("username")
-                .withRootPassword("Pa5$word1234")
+                .withRootPassword(rootPassword)
                 .createAsync();
 
         Observable.merge(vm1,

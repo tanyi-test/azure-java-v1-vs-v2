@@ -36,14 +36,13 @@ public class Track1 {
         // Azure.authenticate(credential).subscriptions().list();
     }
 
-    public static void operateVM(Azure azure) throws IOException {
+    public static void operateVM(Azure azure, String rootPassword) throws IOException {
         final String resourceGroupName = randomString("rg", 8);
         final String virtualMachineName = randomString("vm", 8);
         final Region region = Region.US_WEST;
         final String primaryNetworkSpace = "10.0.0.0/24";
         final String dnsPrefix = randomString("ds", 8);
         final String rootUsername = "roottest";
-        final String rootPassword = "Pa$5word1234";
 
         // This is the usage of dnsPrefix
         // final String vmIp = String.format("%s.%s.cloudapp.azure.com", dnsPrefix, region);
@@ -180,7 +179,7 @@ public class Track1 {
         Azure azure = authentication();
         operateResourceGroup(azure);
         operateNetwork(azure);
-        operateVM(azure);
+        operateVM(azure, System.getenv("PASSWORD"));
         errorHandling(azure);
     }
 }

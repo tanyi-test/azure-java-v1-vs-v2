@@ -3,9 +3,8 @@ package com.test;
 
 import com.azure.core.credential.TokenCredential;
 import com.azure.core.exception.HttpResponseException;
-import com.azure.core.exception.ResourceNotFoundException;
 import com.azure.core.management.AzureEnvironment;
-import com.azure.identity.EnvironmentCredentialBuilder;
+import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.management.Azure;
 import com.azure.management.compute.KnownLinuxVirtualMachineImage;
 import com.azure.management.compute.VirtualMachine;
@@ -24,14 +23,7 @@ public class Track2 {
     }
 
     public static Azure authentication() throws IOException {
-
-        // Use azure-cli or set following environment
-        // export AZURE_CLIENT_ID=<clientId>
-        // export AZURE_CLIENT_SECRET=<clientSecret>
-        // export AZURE_TENANT_ID=<tenantId>
-        // export AZURE_SUBSCRIPTION_ID=<subscriptionId>
-        TokenCredential credential = new EnvironmentCredentialBuilder().build();
-
+        TokenCredential credential = new DefaultAzureCredentialBuilder().build();
         AzureProfile profile = new AzureProfile(AzureEnvironment.AZURE, true);
 
         return Azure.authenticate(credential, profile).withDefaultSubscription();
@@ -40,14 +32,13 @@ public class Track2 {
         // Azure.authenticate(credential).subscriptions().list();
     }
 
-    public static void operateVM(Azure azure) throws IOException {
+    public static void operateVM(Azure azure, String rootPassword) throws IOException {
         final String resourceGroupName = randomString("rg", 8);
         final String virtualMachineName = randomString("vm", 8);
         final Region region = Region.US_WEST;
         final String primaryNetworkSpace = "10.0.0.0/24";
         final String dnsPrefix = randomString("ds", 8);
         final String rootUsername = "roottest";
-        final String rootPassword = "Pa$5word1234";
 
         // This is the usage of dnsPrefix
         // final String vmIp = String.format("%s.%s.cloudapp.azure.com", dnsPrefix, region);
@@ -173,8 +164,6 @@ public class Track2 {
                     .withExistingResourceGroup(resourceGroupName)
                     .withAddressSpace("")
                     .create();
-        } catch (ResourceNotFoundException e) { // not work currently
-            System.err.printf("Catch NotFoundException: %s\n", e);
         } catch (HttpResponseException e) {
             System.err.printf("Catch ResponseException: %s\n", e);
         }
@@ -184,7 +173,7 @@ public class Track2 {
         Azure azure = authentication();
         operateResourceGroup(azure);
         operateNetwork(azure);
-        operateVM(azure);
+        operateVM(azure, System.getenv("PASSWORD"));
         errorHandling(azure);
     }
 }

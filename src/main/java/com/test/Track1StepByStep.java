@@ -12,7 +12,8 @@ public class Track1StepByStep {
     public static void CreateVm(Azure azure,
                                 String resourceGroupName,
                                 String location,
-                                String vmName) {
+                                String vmName,
+                                String rootPassword) {
         System.out.println("Creating resource group...");
         azure.resourceGroups().define(resourceGroupName)
                 .withRegion(location)
@@ -57,7 +58,7 @@ public class Track1StepByStep {
                 .withExistingPrimaryNetworkInterface(networkInterface)
                 .withLatestWindowsImage("MicrosoftWindowsServer", "WindowsServer", "2012-R2-Datacenter")
                 .withAdminUsername("azureuser")
-                .withAdminPassword("Azure12345678")
+                .withAdminPassword(rootPassword)
                 .withComputerName(vmName)
                 .withExistingAvailabilitySet(availabilitySet)
                 .withSize(VirtualMachineSizeTypes.BASIC_A0)
